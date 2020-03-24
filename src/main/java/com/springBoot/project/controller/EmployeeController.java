@@ -1,6 +1,8 @@
 package com.springBoot.project.controller;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +29,6 @@ public class EmployeeController {
 	// displaying list of all employee
 	@GetMapping("/employees")
 	public List<Employee> getAllEmployee(){
-		System.out.println("inside");
 		return employeeService.getAllEmployees();
 	}
 
@@ -54,6 +55,14 @@ public class EmployeeController {
 	@DeleteMapping("employees/{id}")
 	public void deleteEmployeeByID(@RequestBody Employee e, @PathVariable int id){
 		employeeService.deleteEmployeeByID(id);
+	}
+	
+	@GetMapping("employees/byDepartment")
+	public List<Employee> getEmployeeByDepartment(){
+		List<Employee> employees = employeeService.getAllEmployees();
+		Predicate<Employee> predicate = s->s.getDepartment().equalsIgnoreCase("Developemnet");
+		List<Employee> filtredEmps = employees.stream().filter(predicate).collect(Collectors.toList());
+		return filtredEmps;
 	}
 
 }
